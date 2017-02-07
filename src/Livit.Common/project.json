@@ -2,7 +2,7 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "NETStandard.Library": "1.6.0"
+    "System.Data.Common": "4.1.0"
   },
 
   "frameworks": {
@@ -11,12 +11,18 @@
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.0.0"
-        }
+        },
+        "ServiceStack.Core": "1.0.*",
+        "ServiceStack.OrmLite.Core": "1.0.*",
+        "ServiceStack.OrmLite.Sqlite.Core": "1.0.*",
+        "Microsoft.Data.SQLite": "1.0.*"
       }
     },
     "net451": {
       "dependencies": {
-        "Microsoft.NETCore.Platforms": "1.0.1"
+        "Microsoft.NETCore.Platforms": "1.0.1",
+        "ServiceStack.OrmLite": "4.5.6",
+        "ServiceStack.OrmLite.Sqlite.Windows" :  "4.5.6"
       }
     }
   }
