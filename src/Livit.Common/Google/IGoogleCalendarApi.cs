@@ -10,6 +10,6 @@ namespace Livit.Common.Google
 {
     public interface IGoogleCalendarApi
     {
-        Task CreateEvent(CalendarService calendarService, Event @event, string calendarId);
+        Task<Event> CreateEvent(CalendarService calendarService, Event @event, string calendarId);
     }
 }
