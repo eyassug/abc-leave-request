@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Livit.Common.Google;
 
 namespace Livit.ABC.Web
 {
@@ -29,6 +30,9 @@ namespace Livit.ABC.Web
         {
             // Add framework services.
             services.AddMvc();
+
+            services.AddSingleton<IGoogleCalendarApi>(new GoogleCalendarApi());
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
