@@ -3,7 +3,8 @@
 
   "dependencies": {
     "System.Data.Common": "4.1.0",
-    "Google.Apis.Calendar.v3":  "1.20.*"
+    "Google.Apis.Calendar.v3": "1.20.*",
+    "Google.Apis.Oauth2.v2" : "1.20.*"
   },
 
   "frameworks": {

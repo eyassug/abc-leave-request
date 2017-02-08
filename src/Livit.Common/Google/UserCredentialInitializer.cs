@@ -28,15 +28,14 @@ namespace Livit.Common.Google
         {
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
         }
-
-        public static CalendarService CreateFromToken(string accessToken, string applicationName)
+        
+        public static BaseClientService.Initializer CreateServiceInitializer(string accessToken, string applicationName)
         {
-            return new CalendarService(new BaseClientService.Initializer
+            return new BaseClientService.Initializer
             {
                 HttpClientInitializer = new UserCredentialInitializer(accessToken),
                 ApplicationName = applicationName
-            });
-
+            };
         }
     }
 }
