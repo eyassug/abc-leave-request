@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
 
   "dependencies": {
@@ -23,7 +23,11 @@
       "dependencies": {
         "Microsoft.NETCore.Platforms": "1.0.1",
         "ServiceStack.OrmLite": "4.5.6",
-        "ServiceStack.OrmLite.Sqlite.Windows" :  "4.5.6"
+        "ServiceStack.OrmLite.Sqlite.Windows": "4.5.6"
+      },
+      "frameworkAssemblies": {
+        "System.Net": "4.0.0.0",
+        "System.Net.Http": "4.0.0.0"
       }
     }
   }
