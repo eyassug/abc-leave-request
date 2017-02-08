@@ -2,7 +2,8 @@
   "version": "1.0.0-*",
 
   "dependencies": {
-    "System.Data.Common": "4.1.0"
+    "System.Data.Common": "4.1.0",
+    "Google.Apis.Calendar.v3":  "1.20.*"
   },
 
   "frameworks": {
