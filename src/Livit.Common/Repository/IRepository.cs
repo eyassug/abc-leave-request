@@ -9,5 +9,6 @@ namespace Livit.Common.Repository
     {
         void Add(T t);
         IEnumerable<T> GetAll();
+        T GetById(int id);
     }
 }

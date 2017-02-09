@@ -16,8 +16,8 @@ namespace Livit.Web.Services
     {
         public IGoogleCalendarApi GoogleApi { get; set; }
         public IValidator<RequestLeave> Validator { get; set; }
-        public ILeaveRequestRepository Repository { get; set; }
-
+        public ILeaveRequestRepository LeaveRequestRepository { get; set; }
+        public ITokenRepository TokenRepository { get; set; }
         public async Task<object> Post(RequestLeave request)
         {
             var result = Validator.Validate(request);
@@ -30,7 +30,7 @@ namespace Livit.Web.Services
                 var authService = new Oauth2Service(initializer);
 
                 var userInfo = await GoogleApi.GetUserInfoAsync(authService);
-
+                var token = TokenRepository.GetByAccessToken(request.AccessToken);
                 var leaveRequest = new LeaveRequest
                 {
                     FirstName = userInfo.GivenName ?? userInfo.Name,
@@ -41,9 +41,9 @@ namespace Livit.Web.Services
                     Description = request.Description,
                     DateTimeRequested = DateTime.Now,
                     LeaveRequestStatus = LeaveRequestStatus.Pending,
-                    AccessToken = request.AccessToken
+                    TokenId = token.Id
                 };
-                Repository.Add(leaveRequest);
+                LeaveRequestRepository.Add(leaveRequest);
                 return new HttpResult(new RequestLeaveResponse { LeaveRequest = leaveRequest }, HttpStatusCode.Created);
             }
 

@@ -15,6 +15,7 @@ namespace Livit.Web.Services
     public class AdminService : Service
     {
         public ILeaveRequestRepository LeaveRequestRepository { get; set; }
+        public ITokenRepository TokenRepository { get; set; }
         public IGoogleCalendarApi GoogleApi { get; set; }
 
         public object Get(GetLeaveRequests request)
@@ -42,8 +43,9 @@ namespace Livit.Web.Services
             if (leaveRequest.LeaveRequestStatus == LeaveRequestStatus.Approved)
                 return new HttpResult("Request already approved", HttpStatusCode.OK);
 
+            var token = TokenRepository.GetById(leaveRequest.TokenId);
             // Initialize UserCredential from token
-            var initializer = GoogleApi.CreateFromToken(leaveRequest.AccessToken, "ABC");
+            var initializer = GoogleApi.CreateFromToken(leaveRequest.Token.AccessToken, "ABC");
             var calendarService = new CalendarService(initializer);
             
             // Create event in user's calendar

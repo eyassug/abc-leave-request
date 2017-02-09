@@ -42,6 +42,11 @@ namespace Livit.Common.Repository
             return _db.Select<Token>(t => t.AccessToken == accessToken).FirstOrDefault();
         }
 
+        public Token GetById(int id)
+        {
+            return _db.Select<Token>(t => t.Id == id).SingleOrDefault();
+        }
+
         public void RefreshToken(int id)
         {
             throw new NotImplementedException();

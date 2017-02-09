@@ -18,6 +18,7 @@ using ServiceStack.Data;
 using Livit.Common.Repository;
 using System.Data;
 using Livit.Common.Models;
+using ServiceStack.Caching;
 
 namespace Livit.Web
 {
@@ -52,7 +53,7 @@ namespace Livit.Web
 
         public override void Configure(Container container)
         {
-            var dbFactory = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
+            var dbFactory = new OrmLiteConnectionFactory(@"Data Source=./abc.db;", SqliteDialect.Provider);
             container.Register<IGoogleCalendarApi>(new GoogleCalendarApi());
             container.Register<IDbConnectionFactory>(dbFactory);
             using (var db = dbFactory.Open())
@@ -67,6 +68,7 @@ namespace Livit.Web
             container.Register<ITokenRepository>(c => new TokenRepository(c.Resolve<IDbConnectionFactory>().Open()));
 
             Plugins.Add(new SessionFeature());
+            container.Register<ICacheClient>(new MemoryCacheClient());
             Plugins.Add(new SwaggerFeature());
             Plugins.Add(new ValidationFeature());
             container.RegisterValidators(typeof(AppHost).GetAssembly());

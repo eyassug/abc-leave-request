@@ -50,15 +50,7 @@ namespace Livit.Web.Services
         {
             var token = await _googleApi.ExchangeCodeForTokenAsync(this._authFlow, request.Code, RedirectUri);
 
-            var t = new Token
-            {
-                AccessToken = token.AccessToken,
-                IdToken = token.IdToken,
-                Issued = token.Issued,
-                RefreshToken = token.RefreshToken,
-                Scope = token.Scope,
-                TokenType = token.TokenType
-            };
+            var t = token.ConvertTo<Token>();
             TokenRepository.AddOrUpdate(t);
             return new HttpResult(t, MimeTypes.Json);
         }

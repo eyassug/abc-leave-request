@@ -18,7 +18,10 @@ namespace Livit.Common.Models
         public string Description { get; set; }
         public DateTime DateTimeRequested { get; set; }
         public LeaveRequestStatus LeaveRequestStatus { get; set; }
-        public string AccessToken { get; set; }
+        public int TokenId { get; set; }
+
+        [Reference]
+        public Token Token { get; set; }
     }
     [EnumAsInt]
     public enum LeaveRequestStatus

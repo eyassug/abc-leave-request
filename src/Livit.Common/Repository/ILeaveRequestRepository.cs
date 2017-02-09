@@ -8,7 +8,6 @@ namespace Livit.Common.Repository
 {
     public interface ILeaveRequestRepository : IRepository<LeaveRequest>
     {
-        LeaveRequest GetById(int id);
         void UpdateStatus(int id, LeaveRequestStatus status);
     }
 }
