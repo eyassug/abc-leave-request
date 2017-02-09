@@ -7,7 +7,7 @@ namespace Livit.Web.Models
 {
     [Route("/api/admin/requests", "GET")]
     [Route("/api/admin/requests/{Id}", "GET")]
-    public class GetLeaveRequests : IReturn<IEnumerable<LeaveRequestSummary>>
+    public class GetLeaveRequests : IReturn<IEnumerable<LeaveRequestSummary>>, IAdminServiceModel
     {
         public int? Id { get; set; }
     }
