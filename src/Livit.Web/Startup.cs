@@ -19,6 +19,7 @@ using Livit.Common.Repository;
 using System.Data;
 using Livit.Common.Models;
 using ServiceStack.Caching;
+using Livit.Web.Models;
 
 namespace Livit.Web
 {
@@ -47,6 +48,12 @@ namespace Livit.Web
 
     public class AppHost : AppHostBase
     {
+        static string[] AdminEmails = new string[]
+        {
+            "eyassug@gmail.com",
+            // Add your email address here
+        };
+
         public AppHost() : base("abc-services", typeof(Startup).GetAssembly())
         {
         }
@@ -72,6 +79,15 @@ namespace Livit.Web
             Plugins.Add(new SwaggerFeature());
             Plugins.Add(new ValidationFeature());
             container.RegisterValidators(typeof(AppHost).GetAssembly());
+
+            
+            RegisterTypedRequestFilter<IAdminServiceModel>((req, res, dto) =>
+            {
+                var session = req.GetSessionBag();
+                var email = (string)session["email"];
+                if (!AdminEmails.Contains(email))
+                    res.Write("You have to be an admin to access this service");
+            });
 
             SetConfig(new HostConfig
             {

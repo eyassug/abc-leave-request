@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2.Flows;
 using Google.Apis.Calendar.v3;
+using Google.Apis.Oauth2.v2;
 using Livit.Common.Google;
 using Livit.Common.Models;
 using Livit.Common.Repository;
@@ -48,11 +49,28 @@ namespace Livit.Web.Services
         
         public async Task<object> Get(SignInGoogle request)
         {
-            var token = await _googleApi.ExchangeCodeForTokenAsync(this._authFlow, request.Code, RedirectUri);
+            // Check if token has already been redeemed
 
-            var t = token.ConvertTo<Token>();
-            TokenRepository.AddOrUpdate(t);
-            return new HttpResult(t, MimeTypes.Json);
+            var sessionToken = base.SessionBag.Get<Token>("token");
+            if (sessionToken != null)
+            {
+                // Initialize UserCredential from token
+                var initializer = _googleApi.CreateFromToken(sessionToken.AccessToken, "ABC");
+                var authService = new Oauth2Service(initializer);
+
+                var userInfo = await _googleApi.GetUserInfoAsync(authService);
+                base.SessionBag["email"] = userInfo.Email;
+            }
+            else
+            {
+                var token = await _googleApi.ExchangeCodeForTokenAsync(this._authFlow, request.Code, RedirectUri);
+                // Auto-map to custom model
+                sessionToken = token.ConvertTo<Token>();
+                TokenRepository.AddOrUpdate(sessionToken);
+                base.SessionBag["token"] = sessionToken;
+            }
+           
+            return new HttpResult(sessionToken, MimeTypes.Json);
         }
 
         #region Helper Methods
