@@ -1,4 +1,6 @@
-﻿using Livit.Common.Google;
+﻿using Google.Apis.Calendar.v3;
+using Livit.Common.Google;
+using Livit.Common.Models;
 using Livit.Common.Repository;
 using Livit.Web.Models;
 using ServiceStack;
@@ -23,22 +25,51 @@ namespace Livit.Web.Services
 
         public async Task<object> Post(ApproveLeaveRequest request)
         {
+            var leaveRequest = LeaveRequestRepository.GetById(request.Id);
+
+            if (leaveRequest == null)
+                return new HttpResult(HttpStatusCode.NotFound);
+
             // Check status
+            if (leaveRequest.LeaveRequestStatus == LeaveRequestStatus.Approved)
+                return new HttpResult("Request already approved", HttpStatusCode.OK);
 
-            // if already approved, return Http.Ok("already approved")
+            // Initialize UserCredential from token
+            var initializer = GoogleApi.CreateFromToken(leaveRequest.AccessToken, "ABC");
+            var calendarService = new CalendarService(initializer);
+            
+            // Create event in user's calendar
+            await GoogleApi.CreateEventAsync(calendarService, new Google.Apis.Calendar.v3.Data.Event
+            {
+                Summary = leaveRequest.Description ?? "Time off",
+                Start = new Google.Apis.Calendar.v3.Data.EventDateTime
+                {
+                    DateTime = leaveRequest.StartDate
+                },
+                End = new Google.Apis.Calendar.v3.Data.EventDateTime
+                {
+                    DateTime = leaveRequest.EndDate
+                },
+                Description = leaveRequest.Description
+            }, "primary");
 
-            // else create event in user's calendar, save status to database
-            return request;
+            LeaveRequestRepository.UpdateStatus(request.Id, LeaveRequestStatus.Approved);
+            return new HttpResult(HttpStatusCode.OK);
         }
 
-        public async Task<object> Post(RejectLeaveRequest request)
+        public object Post(RejectLeaveRequest request)
         {
+            var leaveRequest = LeaveRequestRepository.GetById(request.Id);
+
+            if (leaveRequest == null)
+                return new HttpResult(HttpStatusCode.NotFound);
+            
             // Check status
+            if (leaveRequest.LeaveRequestStatus == LeaveRequestStatus.Approved)
+                return new HttpResult("Request already approved", HttpStatusCode.BadRequest);
 
-            // if already approved, return Http.BadRequest("already approved")
-
-            // else save status to database
-            return request;
+            LeaveRequestRepository.UpdateStatus(request.Id, LeaveRequestStatus.Rejected);
+            return new HttpResult(HttpStatusCode.OK);
         }
 
 
