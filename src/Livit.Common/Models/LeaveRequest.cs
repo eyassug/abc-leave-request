@@ -15,9 +15,10 @@ namespace Livit.Common.Models
         public string Email { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+        public string Description { get; set; }
         public DateTime DateTimeRequested { get; set; }
-        
         public LeaveRequestStatus LeaveRequestStatus { get; set; }
+        public string AccessToken { get; set; }
     }
     [EnumAsInt]
     public enum LeaveRequestStatus

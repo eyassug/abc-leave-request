@@ -12,6 +12,12 @@ using Microsoft.Extensions.Logging;
 using ServiceStack;
 using ServiceStack.Api.Swagger;
 using Livit.Common.Google;
+using ServiceStack.Validation;
+using ServiceStack.OrmLite;
+using ServiceStack.Data;
+using Livit.Common.Repository;
+using System.Data;
+using Livit.Common.Models;
 
 namespace Livit.Web
 {
@@ -46,10 +52,23 @@ namespace Livit.Web
 
         public override void Configure(Container container)
         {
+            var dbFactory = new OrmLiteConnectionFactory(":memory:", SqliteDialect.Provider);
             container.Register<IGoogleCalendarApi>(new GoogleCalendarApi());
+            container.Register<IDbConnectionFactory>(dbFactory);
+            using (var db = dbFactory.Open())
+            {
+                if (db.CreateTableIfNotExists<LeaveRequest>())
+                {
+                    // TODO: Add seed data here
+                }
+            }
+            container.Register<ILeaveRequestRepository>(c => new LeaveRequestRepository(c.Resolve<IDbConnectionFactory>().Open()));
+            
 
             Plugins.Add(new SessionFeature());
             Plugins.Add(new SwaggerFeature());
+            Plugins.Add(new ValidationFeature());
+            container.RegisterValidators(typeof(AppHost).GetAssembly());
 
             SetConfig(new HostConfig
             {
