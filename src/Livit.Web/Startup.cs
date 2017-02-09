@@ -61,6 +61,7 @@ namespace Livit.Web
                 {
                     // TODO: Add seed data here
                 }
+                db.CreateTableIfNotExists<Token>();
             }
             container.Register<ILeaveRequestRepository>(c => new LeaveRequestRepository(c.Resolve<IDbConnectionFactory>().Open()));
             container.Register<ITokenRepository>(c => new TokenRepository(c.Resolve<IDbConnectionFactory>().Open()));
