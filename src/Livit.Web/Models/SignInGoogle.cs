@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Livit.Web.Models
 {
-    [Route("/api/auth/signin-google")]
+    [Route("/api/auth/signin-google", "GET")]
     public class SignInGoogle
     {
         public string Code { get; set; }

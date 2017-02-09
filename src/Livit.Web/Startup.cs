@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using ServiceStack;
 using ServiceStack.Api.Swagger;
+using Livit.Common.Google;
 
 namespace Livit.Web
 {
@@ -45,8 +46,15 @@ namespace Livit.Web
 
         public override void Configure(Container container)
         {
+            container.Register<IGoogleCalendarApi>(new GoogleCalendarApi());
+
             Plugins.Add(new SessionFeature());
             Plugins.Add(new SwaggerFeature());
+
+            SetConfig(new HostConfig
+            {
+                DefaultContentType = MimeTypes.Json
+            });
         }
     }
 }

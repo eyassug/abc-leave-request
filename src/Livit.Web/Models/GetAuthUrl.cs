@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Livit.Web.Models
 {
-    [Route("/api/auth")]
+    [Route("/api/auth", "GET")]
     public class GetAuthUrl
     {
     }
