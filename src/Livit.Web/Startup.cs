@@ -63,7 +63,7 @@ namespace Livit.Web
                 }
             }
             container.Register<ILeaveRequestRepository>(c => new LeaveRequestRepository(c.Resolve<IDbConnectionFactory>().Open()));
-            
+            container.Register<ITokenRepository>(c => new TokenRepository(c.Resolve<IDbConnectionFactory>().Open()));
 
             Plugins.Add(new SessionFeature());
             Plugins.Add(new SwaggerFeature());

@@ -2,6 +2,7 @@
 using Google.Apis.Calendar.v3;
 using Livit.Common.Google;
 using Livit.Common.Models;
+using Livit.Common.Repository;
 using Livit.Web.Models;
 using ServiceStack;
 using System;
@@ -21,6 +22,7 @@ namespace Livit.Web.Services
         readonly IGoogleCalendarApi _googleApi;
         readonly GoogleAuthorizationCodeFlow _authFlow;
 
+        public ITokenRepository TokenRepository { get; set; }
         #region Constructor
         public AuthService(IGoogleCalendarApi googleApi)
         {
@@ -46,10 +48,9 @@ namespace Livit.Web.Services
         
         public async Task<object> Get(SignInGoogle request)
         {
-            // TODO: Store token
             var token = await _googleApi.ExchangeCodeForTokenAsync(this._authFlow, request.Code, RedirectUri);
 
-            return new HttpResult(new Token
+            var t = new Token
             {
                 AccessToken = token.AccessToken,
                 IdToken = token.IdToken,
@@ -57,7 +58,9 @@ namespace Livit.Web.Services
                 RefreshToken = token.RefreshToken,
                 Scope = token.Scope,
                 TokenType = token.TokenType
-            }, MimeTypes.Json);
+            };
+            TokenRepository.AddOrUpdate(t);
+            return new HttpResult(t, MimeTypes.Json);
         }
 
         #region Helper Methods
