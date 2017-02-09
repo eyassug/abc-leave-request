@@ -19,8 +19,16 @@ namespace Livit.Web.Services
 
         public object Get(GetLeaveRequests request)
         {
-            var allRequests = LeaveRequestRepository.GetAll();
-            return new HttpResult(allRequests, HttpStatusCode.OK);
+            // Request Details
+            if(request.Id == null)
+            {
+                // AutoMapping example
+                var allRequests = LeaveRequestRepository.GetAll().Select(r => r.ConvertTo<LeaveRequestSummary>());
+                return new HttpResult(allRequests, HttpStatusCode.OK);
+            }
+            var leaveRequest = LeaveRequestRepository.GetById(request.Id.Value);
+            return leaveRequest != null ? new HttpResult(leaveRequest.ConvertTo<LeaveRequestSummary>()) : new HttpResult(HttpStatusCode.NotFound);
+            
         }
 
         public async Task<object> Post(ApproveLeaveRequest request)
