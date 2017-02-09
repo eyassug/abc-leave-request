@@ -52,16 +52,7 @@ namespace Livit.Web.Services
             // Check if token has already been redeemed
 
             var sessionToken = base.SessionBag.Get<Token>("token");
-            if (sessionToken != null)
-            {
-                // Initialize UserCredential from token
-                var initializer = _googleApi.CreateFromToken(sessionToken.AccessToken, "ABC");
-                var authService = new Oauth2Service(initializer);
-
-                var userInfo = await _googleApi.GetUserInfoAsync(authService);
-                base.SessionBag["email"] = userInfo.Email;
-            }
-            else
+            if (sessionToken == null)
             {
                 var token = await _googleApi.ExchangeCodeForTokenAsync(this._authFlow, request.Code, RedirectUri);
                 // Auto-map to custom model
@@ -69,7 +60,12 @@ namespace Livit.Web.Services
                 TokenRepository.AddOrUpdate(sessionToken);
                 base.SessionBag["token"] = sessionToken;
             }
-           
+            // Initialize UserCredential from token
+            var initializer = _googleApi.CreateFromToken(sessionToken.AccessToken, "ABC");
+            var authService = new Oauth2Service(initializer);
+
+            var userInfo = await _googleApi.GetUserInfoAsync(authService);
+            base.SessionBag["email"] = userInfo.Email;
             return new HttpResult(sessionToken, MimeTypes.Json);
         }
 
