@@ -35,7 +35,7 @@ namespace Livit.Common.Repository
 
         public void UpdateStatus(int id, LeaveRequestStatus status)
         {
-            _db.Update(new LeaveRequest { Id = id, LeaveRequestStatus = status });
+            _db.UpdateOnly(() => new LeaveRequest { LeaveRequestStatus = status }, where: r => r.Id == id);
         }
         public void Dispose()
         {
