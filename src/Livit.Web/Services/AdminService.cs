@@ -45,7 +45,7 @@ namespace Livit.Web.Services
 
             var token = TokenRepository.GetById(leaveRequest.TokenId);
             // Initialize UserCredential from token
-            var initializer = GoogleApi.CreateFromToken(leaveRequest.Token.AccessToken, "ABC");
+            var initializer = GoogleApi.CreateFromToken(token.AccessToken, "ABC");
             var calendarService = new CalendarService(initializer);
             
             // Create event in user's calendar
